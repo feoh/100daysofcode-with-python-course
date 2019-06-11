@@ -1,3 +1,5 @@
+from random import random
+
 from prompt_toolkit import prompt
 
 class Player():
@@ -13,6 +15,9 @@ class Roll():
         self.rolls_i_can_beat = []
         self.rolls_that_beat_me = []
 
+    def __repr__(self):
+        return self.name
+
 
 def build_the_three_rolls():
     rock = Roll("Rock")
@@ -26,17 +31,23 @@ def build_the_three_rolls():
     scissors.rolls_i_can_beat = [paper]
     scissors.rolls_that_beat_me = [rock]
 
-    return (rock, paper, scissors)
+    return rock, paper, scissors
+
 
 def game_loop(player1, player2, rolls):
     count = 1
     while count < 3:
-        p2_roll = None # TODO: get random roll
-        p1_roll = None # TODO: have player choose a roll
 
-        outcome = p1_roll.can_defeat(p2_roll)
+        three_rolls = build_the_three_rolls()
 
-        # display throws
+        p2_roll = three_rolls[round(random() * 2)]
+
+        p1_roll = three_rolls[round(random() * 2)]
+
+        # outcome = p1_roll.can_defeat(p2_roll)
+
+        print(f"Player 1 rolled: {p1_roll}")
+        print(f"Player 2 rolled: {p2_roll}")
         # display winner for this round
 
         count += 1
@@ -64,7 +75,7 @@ def main():
     player2 = Player("computer")
 
     # Doesn't work yet :)
-    # game_loop(player1, player2, rolls)
+    game_loop(player1, player2, rolls)
 
 
 if __name__ == "__main__":
