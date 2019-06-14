@@ -1,4 +1,5 @@
 from random import random
+from random import seed
 
 from prompt_toolkit import prompt
 
@@ -17,6 +18,11 @@ class Roll():
 
     def __repr__(self):
         return self.name
+
+
+    def can_defeat(self, challenge):
+       return challenge in self.rolls_i_can_beat
+
 
 
 def build_the_three_rolls():
@@ -40,15 +46,17 @@ def game_loop(player1, player2, rolls):
 
         three_rolls = build_the_three_rolls()
 
+        seed()
         p2_roll = three_rolls[round(random() * 2)]
 
         p1_roll = three_rolls[round(random() * 2)]
 
-        # outcome = p1_roll.can_defeat(p2_roll)
+        outcome = p1_roll.can_defeat(p2_roll)
 
         print(f"Player 1 rolled: {p1_roll}")
         print(f"Player 2 rolled: {p2_roll}")
         # display winner for this round
+        print(f"outcome is - p1 wins?: {outcome}")
 
         count += 1
 
