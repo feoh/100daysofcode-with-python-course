@@ -1,9 +1,10 @@
 import json
+import argparse
 import fire
 import time
+import readchar
 from pathlib import Path
 from datetime import datetime
-from logbook import RotatingFileHandler, warn, notice, debug, exception, info
 
 def back_to_work():
     print("Back to work!")
@@ -14,11 +15,11 @@ def back_to_work():
 def restore_from_saved_poms(poms_file):
     config_path = Path.home() / ".config" 
     poms_file = config_path / "Pomodoro.json"
-    info(f"config_path: {config_path} poms_file: {poms_file}")
+    print(f"config_path: {config_path} poms_file: {poms_file}")
 
     try:
         with open(poms_file,'r') as pfile:
-            info(f"Reloading saved Pomodoros from {poms_file}")
+            print(f"Reloading saved Pomodoros from {poms_file}")
             return(json.load(pfile))
     except OSError:
         print("No previously stored Pomodoros! Welcome!")
@@ -32,10 +33,6 @@ def check_break_time(completed_poms, mini_break_time, long_break_time):
 
 
 def start(mini_break_time, long_break_time):
-
-    handler = RotatingFileHandler("Pomodoro.log")
-    handler.push_application()
-
     # A single Pomodoro is 25 minutes long.
     pomodoro_seconds = 60 * 25
     completed_poms = 0
@@ -78,7 +75,7 @@ def start(mini_break_time, long_break_time):
             raise(KeyboardInterrupt)
 
 
-        info(f"Pom seconds: {pom_seconds} Finished poms: {completed_poms}")
+        print(f"Pom seconds: {pom_seconds} Finished poms: {completed_poms}")
 
         Pom['end_time'] = str(end_time)
         Pom['elapsed'] = str(elapsed)
