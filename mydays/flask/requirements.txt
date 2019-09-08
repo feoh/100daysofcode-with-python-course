@@ -1,1 +1,3 @@
 flask
+pypiwin32
+wmi
