@@ -2,7 +2,11 @@ import sqlite3
 from contextlib import contextmanager
 
 table_defs = {'rooms':'room_id INTEGER PRIMARY KEY, room_name TEXT NOT NULL',
-              'items':'item_id INTEGER PRIMARY KEY, item_name TEXT NOT NULL, item_value INTEGER NOT NULL, room_id INTEGER NOT NULL'}
+              'items':'item_id INTEGER PRIMARY KEY,'
+                      'item_name TEXT NOT NULL,'
+                      'item_value INTEGER NOT NULL,'
+                      'item_room INTEGER NOT NULL,'
+                      'FOREIGN KEY(item_room) REFERENCES rooms(room_id)'}
 
 
 @contextmanager
@@ -47,7 +51,14 @@ def add_room():
     with db_access() as db:
         db.execute(f"INSERT INTO rooms('room_name') values('{room_name}');")
         db.connection.commit()
-        return True
+    return True
+
+def find_room_by_id(room_id):
+    db: sqlite3.Cursor
+    with db_access() as db:
+        db.execute('select room_name from rooms;')
+        room_names = db.fetchall()
+    return room_names[room_id][0]
 
 
 def choose_room():
@@ -72,13 +83,13 @@ def add_item_to_room():
     print(f"Item name: {item_name}")
     item_value = input("Please enter an item's value in whole dollars:")
     print(f"Item value: {item_value}")
-    item_room_id = input("Please enter the number of the room this item is in:")
-    print(f"This item is in room: {item_room_id}")
+    item_room = input("Please enter the number of the room this item is in:")
+    print(f"This item is in room: {item_room}")
     db: sqlite3.Cursor
     with db_access() as db:
-        db.execute(f"INSERT INTO items('item_name', 'item_value', 'room_id') values('{item_name}','{item_value}','{item_room_id}');")
+        db.execute(f"INSERT INTO items('item_name', 'item_value', 'item_room') values('{item_name}','{item_value}','{item_room}');")
         db.connection.commit()
-        return True
+    return True
 
 
 def view_inventory():
@@ -86,12 +97,16 @@ def view_inventory():
         db.execute("select * from 'items';")
         all_items = db.fetchall()
         for item_tuple in all_items:
-            print(f"Item Name: {item_tuple[1]} Item Value: {item_tuple[2]} Room: TODO")
-
+            (item_id, item_name, item_value, item_room) = item_tuple
+            print(f"Item Name: {item_name} Item Value: {item_value} Room: {item_room}")
+    return True
 
 
 def grand_total_value():
-    # TODO NYI
+    with db_access() as db:
+        db.execute('select sum(item_value) from items;')
+        grand_total = db.fetchone()[0]
+        print(f"Grand Total: {grand_total}")
     return True
 
 
