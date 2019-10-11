@@ -6,15 +6,12 @@ ModelBase = declarative_base()
 
 class Player(ModelBase):
     __tablename__ = "players"
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-
-    def __repr__(self):
-        return f'Player Name: {self.name}'
+    player_id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
 
     def to_json(self):
         return {
-            'id': self.id,
+            'id': self.player_id,
             'name': self.name
         }
 
@@ -22,13 +19,9 @@ class Player(ModelBase):
 class HighScore(ModelBase):
     __tablename__ = "highscores"
     high_score_id = Column(Integer, primary_key=True)
-    player_id = Column(Integer, ForeignKey('players.id'), unique=True)
+    player_id = Column(Integer, ForeignKey('players.player_id'), unique=True)
     high_score = Column(Integer, nullable=False)
 
-    def __repr__(self):
-        return f"""
-        Player Name: {self.player_id}
-        High Score: {self.high_score}"""
 
     def to_json(self):
         return {
@@ -40,11 +33,8 @@ class HighScore(ModelBase):
 class Score(ModelBase):
     __tablename__ = "scores"
     score_id = Column(Integer, primary_key=True)
-    player_id = Column(Integer, ForeignKey('players.id'))
+    player_id = Column(Integer, ForeignKey('players.player_id'))
     score = Column(Integer, nullable=False)
-
-    def __repr__(self):
-        return f'Player Name: {self.player_id} Score: {self.score}'
 
     def to_json(self):
         return {
