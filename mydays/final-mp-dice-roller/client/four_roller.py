@@ -14,18 +14,20 @@ def main():
     if not current_player:
         print(f"Hi {player_name}! Welcome to Four Roller!")
         current_player = rsvc.create_player(player_name)
+    else:
+        print(f"Welcome back {player_name}!")
 
     player_score = rsvc.roll_turn(num_dice=4)
     computer_score = rsvc.roll_turn(num_dice=4)
+
+    print(f"Your Score: {player_score}")
+    print(f"Computer Score: {computer_score}")
 
     if player_score > computer_score:
         print(f"You won!!!!!")
     else:
         print("Sorry. You lost this game.")
         exit(0)
-
-    print(f"Your Score: {player_score}")
-    print(f"Computer Score: {computer_score}")
 
     current_player_id = current_player['id']
     rsvc.record_score(player_id=current_player_id, current_score=player_score)
@@ -34,6 +36,8 @@ def main():
     if broken_high_score:
         print("Congratulations you hit an all time high! Recording your new high score.")
         rsvc.record_high_score(player_id=current_player_id, current_score=player_score)
+    else:
+        print("No high score this time. Try again!")
 
 if __name__ == '__main__':
     main()
