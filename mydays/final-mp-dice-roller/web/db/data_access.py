@@ -22,13 +22,21 @@ def initialize_orm():
     return session
 
 
+def find_player(name):
+    session = initialize_orm()
+    player = session.query(Player).filter(Player.name == name).first()
+    if player:
+        return player.to_json()
+    else:
+        return {}
+
+
 def create_player(name):
     session = initialize_orm()
     player = Player(name=name)
     session.add(player)
     session.commit()
-    return True
-
+    return player.to_json()
 
 def get_all_players():
     session = initialize_orm()
@@ -43,7 +51,7 @@ def record_score(player_id, current_score):
     score = Score(player_id=player_id, score = current_score)
     session.add(score)
     session.commit()
-    return True
+    return score.to_json()
 
 
 def check_high_score(player_id, current_score):
@@ -52,13 +60,16 @@ def check_high_score(player_id, current_score):
     current_highscore_query = session.query(HighScore)\
         .filter(HighScore.player_id == player_id).first()
 
-    current_highscore = current_highscore_query.high_score
-
-    print(current_highscore)
-    if current_score > current_highscore:
-        return True
+    if current_highscore_query:
+        current_highscore = current_highscore_query.high_score
+        print(current_highscore)
+        if current_score > current_highscore:
+            return True
+        else:
+            return False
+    # No current highscore, so this is in fact a high score. Yay!
     else:
-        return False
+        return True
 
 
 def record_high_score(player_id, current_score):
