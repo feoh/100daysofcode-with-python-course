@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 import data_models
 
+
 def initialize_orm():
     engine: Engine = create_engine("sqlite:///homeinventory-orm.sqlite")
     data_models.ModelBase.metadata.create_all(engine)
@@ -40,7 +41,7 @@ def add_item(session):
 def choose_room(session):
     rooms: data_models.Room = session.query(data_models.Room)
 
-    room_names = [room.name for room in rooms]
+    room_names = get_room_names(rooms)
     for room_num, room_name in enumerate(room_names):
         print(f"{room_num + 1}. {room_name}")
 
@@ -51,6 +52,11 @@ def choose_room(session):
             return picked_room_num
         except IndexError:
             print("Invalid choice. Please try again!")
+
+
+def get_room_names(rooms):
+    room_names = [room.name for room in rooms]
+    return room_names
 
 
 def view_inventory(session):
